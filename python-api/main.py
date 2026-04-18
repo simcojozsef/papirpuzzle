@@ -8,14 +8,21 @@ from openai import OpenAI
 client = OpenAI()
 app = FastAPI()
 
-# ✅ CORS
+# ✅ CORS FIX (FONTOS!)
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],  # később cserélhető konkrét domainre
+    allow_origins=[
+        "https://papirpuzzle.vercel.app",
+    ],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
 )
+
+# ✅ PREFLIGHT FIX (CORS miatt kötelező)
+@app.options("/reconstruct/")
+async def options_reconstruct():
+    return {"ok": True}
 
 
 def extract_text(file):
@@ -28,7 +35,6 @@ def extract_text(file):
     return text
 
 
-# ✅ CLEAN TEXT FUNCTION
 def clean_text(text: str) -> str:
     text = text.replace("\n", " ")
     text = re.sub(r"\s+", " ", text)
@@ -40,19 +46,15 @@ def clean_text(text: str) -> str:
 async def reconstruct(files: List[UploadFile] = File(...)):
     texts = []
 
-    # ✅ sort files
     files = sorted(files, key=lambda f: f.filename)
 
     for file in files:
         raw_text = extract_text(file.file)
         text = clean_text(raw_text)
-
         texts.append(f"\n--- {file.filename} ---\n{text}")
 
-    # ✅ better memory handling
     combined_text = "\n".join(texts)
 
-    # 🔥 AI reconstruction step
     prompt = f"""
 You are given fragments of a document extracted from multiple PDF files.
 They may be out of order and partially broken.
@@ -71,7 +73,7 @@ Text:
 
     response = client.chat.completions.create(
         model="gpt-4o-mini",
-        temperature=0,  # ✅ fontos!
+        temperature=0,
         messages=[
             {
                 "role": "system",
