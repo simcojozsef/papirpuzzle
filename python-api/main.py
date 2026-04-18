@@ -59,17 +59,7 @@ async def reconstruct(files: List[UploadFile] = File(...)):
     You are given fragments of a document extracted from multiple PDF files.
     They may be out of order and partially broken.
 
-    Your task:
-    - Reconstruct the original document as accurately as possible
-    - Fix broken words and sentences
-    - Merge fragments into coherent paragraphs
-    - Preserve the original meaning
-
-    IMPORTANT:
-    - You MAY fix broken words
-    - You MAY reorder content
-    - Do NOT invent new content
-    - Keep the text natural and readable
+    Reconstruct them into a clean, readable, logically ordered text.
 
     Text:
     {combined_text}
@@ -77,12 +67,8 @@ async def reconstruct(files: List[UploadFile] = File(...)):
 
     response = client.chat.completions.create(
         model="gpt-4o-mini",
-        temperature=0.3,
+        temperature=0,
         messages=[
-            {
-                "role": "system",
-                "content": "You reconstruct damaged documents and fix broken text while preserving meaning."
-            },
             {
                 "role": "user",
                 "content": prompt
