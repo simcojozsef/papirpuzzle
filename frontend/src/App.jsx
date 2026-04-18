@@ -36,7 +36,7 @@ function App() {
     const formData = new FormData();
 
     for (let i = 0; i < files.length; i++) {
-      formData.append("pdfs[]", files[i]);
+      formData.append("files", files[i]);
     }
 
     try {
