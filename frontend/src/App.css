@@ -1,0 +1,37 @@
+:root {
+  --cta: rgb(136, 232, 255);
+  --bg: rgb(8, 12, 33);
+  --text: #e2e8f0;
+  --card: #111633;
+}
+
+#root {
+  border: none !important;
+}
+
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--text);
+  font-family: "FAIRE Luma Sans Regular", sans-serif;
+}
+
+/* Smooth modern look */
+button {
+  font-family: inherit;
+  transition: all 0.2s ease;
+}
+
+button:hover {
+  opacity: 0.9;
+}
+
+input {
+  font-family: inherit;
+  color: white;
+}
+
+label:hover {
+  border-color: var(--cta);
+  background: rgba(136, 232, 255, 0.08);
+}
